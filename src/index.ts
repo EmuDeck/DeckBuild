@@ -76,7 +76,9 @@ function build()
 		console.log('Grabbing provided dockerfile.');
 		console.log('Building provided Dockerfile.');
 		child_process.execSync(`docker build -f ${path.join(process.cwd(), 'backend', 'Dockerfile')} -t "${docker_name}" .`)
-		fs.mkdirSync(path.join(process.cwd(), 'build', 'backend', 'out'))
+		fs.mkdirSync(path.join(process.cwd(), 'build', 'backend', 'out'), {
+			recursive: true
+		})
 		if (entrypoint_exists)
 		{
 			console.log(`Running docker image "${docker_name}" with provided entrypoint script.`)
@@ -100,6 +102,9 @@ function build()
 	else if (!dockerfile_exists && entrypoint_exists)
 	{
 		console.log('Grabbing default docker image and using provided entrypoint script.')
+		fs.mkdirSync(path.join(process.cwd(), 'build', 'backend', 'out'), {
+			recursive: true
+		})
 		child_process.execSync(`docker run --rm -i -v ${path.join(process.cwd(), 'backend')}:/backend -v ${path.join(process.cwd(), 'build', 'backend', 'out')}:/backend/out ghcr.io/steamdeckhomebrew/holo-base:latest`)
 		fs.mkdirSync(path.join(process.cwd(), 'build', plugin.name, 'bin'), {
 			recursive: true
