@@ -120,7 +120,7 @@ function build()
 		console.log(`Plugin ${plugin.name} does not have a backend`)
 	}
 	//frontend
-	child_process.execSync(`docker run --rm -i -v "${process.cwd()}:/plugin -v ${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`docker run --rm -i -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
 	console.log(` Built ${plugin.name} frontend`)
 
 	//zip
