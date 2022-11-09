@@ -132,16 +132,16 @@ function build()
 	const has_defaults = fs.existsSync(path.join(process.cwd(), 'defaults'))
 
 	process.chdir('build')
-	child_process.execSync(`zip -r ${path.join(process.cwd(), zip)} ${path.join(plugin.name, 'dist')} ${path.join(plugin.name, 'plugin.json')} ${path.join(plugin.name, 'package.json')}`)
+	child_process.execSync(`zip -r "${path.join(process.cwd(), zip)}" "${path.join(plugin.name, 'dist')}" "${path.join(plugin.name, 'plugin.json')}" "${path.join(plugin.name, 'package.json')}"`)
 
 	if (has_bin)
 	{
-		child_process.execSync(`zip -r ${path.join(process.cwd(), zip)} ${path.join(plugin.name, 'bin')}`);
+		child_process.execSync(`zip -r "${path.join(process.cwd(), zip)}" "${path.join(plugin.name, 'bin')}"`);
 	}
 
 	if (has_python)
 	{
-		child_process.execSync(`find ${plugin.name} -maxdepth 1 -type f -name '*.py' -exec zip -r ${path.join(process.cwd(), zip)} {} \\;`)
+		child_process.execSync(`find "${plugin.name}" -maxdepth 1 -type f -name '*.py' -exec zip -r "${path.join(process.cwd(), zip)}" {} \\;`)
 	}
 
 	if (has_defaults)
@@ -154,7 +154,7 @@ function build()
 				fs.copySync(path.join(plugin.name, 'defaults', name), path.join(plugin.name, name), {
 					recursive: true
 				});
-				child_process.execSync(`zip -r ${path.join(process.cwd(), zip)} ${path.join(plugin.name, name)}`)
+				child_process.execSync(`zip -r "${path.join(process.cwd(), zip)}" "${path.join(plugin.name, name)}"`)
 			}
 		}
 		else
@@ -172,12 +172,12 @@ function build()
 
 	if (license)
 	{
-		child_process.execSync(`zip -r ${path.join(process.cwd(), zip)} ${path.join(plugin.name, license)}`)
+		child_process.execSync(`zip -r "${path.join(process.cwd(), zip)}" "${path.join(plugin.name, license)}"`)
 	}
 
 	if (readme)
 	{
-		child_process.execSync(`zip -r ${path.join(process.cwd(), zip)} ${path.join(plugin.name, readme)}`)
+		child_process.execSync(`zip -r "${path.join(process.cwd(), zip)}" "${path.join(plugin.name, readme)}"`)
 	}
 	process.chdir('..')
 }
@@ -195,6 +195,6 @@ function deploy()
 	child_process.execSync(`unzip ${path.join(process.cwd(), 'build', zip)} -d ${path.join(process.cwd(), 'build', 'deploy')}`)
 	child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')} 'mkdir -p ${deck.deckdir}/homebrew/pluginloader && mkdir -p ${deck.deckdir}/homebrew/plugins'`)
 	child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')} 'echo "${deck.deckpass}" | sudo -S chmod -R ug+rw ${deck.deckdir}/homebrew/'`)
-	child_process.execSync(`rsync -azp --delete --chmod=D0755,F0755 --rsh='ssh -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')}' ${path.join(process.cwd(), 'build', 'deploy', plugin.name)} deck@${deck.deckip}:${deck.deckdir}/homebrew/plugins`)
+	child_process.execSync(`rsync -azp --delete --chmod=D0755,F0755 --rsh='ssh -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')}' "${path.join(process.cwd(), 'build', 'deploy', plugin.name)}" deck@${deck.deckip}:${deck.deckdir}/homebrew/plugins`)
 }
 
