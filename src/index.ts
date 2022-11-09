@@ -193,8 +193,8 @@ function deploy()
 	build()
 	const zip = `${plugin.name}-${package_.version}.zip`;
 	child_process.execSync(`unzip ${path.join(process.cwd(), 'build', zip)} -d ${path.join(process.cwd(), 'build', 'deploy')}`)
-	child_process.execSync(`ssh witherking25@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')} 'mkdir -p ${deck.deckdir}/homebrew/pluginloader && mkdir -p ${deck.deckdir}/homebrew/plugins'`)
-	child_process.execSync(`ssh witherking25@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')} 'echo "${deck.deckpass}" | sudo -S chmod -R ug+rw ${deck.deckdir}/homebrew/'`)
-	child_process.execSync(`rsync -azp --delete --chmod=D0755,F0755 --rsh='ssh -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')}' ${path.join(process.cwd(), 'build', 'deploy', plugin.name)} witherking25@${deck.deckip}:${deck.deckdir}/homebrew/plugins`)
+	child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')} 'mkdir -p ${deck.deckdir}/homebrew/pluginloader && mkdir -p ${deck.deckdir}/homebrew/plugins'`)
+	child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')} 'echo "${deck.deckpass}" | sudo -S chmod -R ug+rw ${deck.deckdir}/homebrew/'`)
+	child_process.execSync(`rsync -azp --delete --chmod=D0755,F0755 --rsh='ssh -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME : '')}' ${path.join(process.cwd(), 'build', 'deploy', plugin.name)} deck@${deck.deckip}:${deck.deckdir}/homebrew/plugins`)
 }
 
