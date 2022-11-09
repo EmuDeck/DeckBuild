@@ -1,7 +1,0 @@
-{
-	"deckip": "127.0.0.1",
-	"deckport": "22",
-	"deckpass": "Emil2003&",
-	"deckkey": "-i $HOME/.ssh/id_rsa",
-	"deckdir": "/home/witherking25"
-}
