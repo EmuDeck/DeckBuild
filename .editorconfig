@@ -1,0 +1,17 @@
+root = true
+
+[*]
+indent_style = tab
+indent_size = tab
+ij_any_array_initializer_new_line_after_left_brace = true
+ij_any_block_brace_style = next_line
+ij_any_class_brace_style = next_line
+ij_any_lambda_brace_style = next_line
+ij_any_method_brace_style = next_line
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.md]
+trim_trailing_whitespace = false

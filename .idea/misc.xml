@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ASMSmaliIdeaPluginConfiguration">
+    <asm skipDebug="true" skipFrames="true" skipCode="false" expandFrames="false" />
+    <groovy codeStyle="LEGACY" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="DMD64 D Compiler v2.100.1" project-jdk-type="DMD2 SDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="SwUserDefinedSpecifications">
+    <option name="specTypeByUrl">
+      <map />
+    </option>
+  </component>
+</project>

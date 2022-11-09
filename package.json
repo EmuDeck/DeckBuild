@@ -1,14 +1,18 @@
 {
-  "name": "typescript-npm-package-template",
+  "name": "deckbuild",
   "version": "0.0.0-development",
   "description": "A template for creating npm packages using TypeScript and VSCode",
-  "main": "./lib/index.js",
+  "main": "./bin/index.js",
   "files": [
-    "lib/**/*"
+    "bin/**/*"
   ],
+  "bin": {
+    "dbuild": "./bin/index.js"
+  },
   "scripts": {
+    "start": "node bin/index.js",
     "build": "tsc --project tsconfig.build.json",
-    "clean": "rm -rf ./lib/",
+    "clean": "rm -rf ./bin/",
     "cm": "cz",
     "lint": "eslint ./src/ --fix",
     "prepare": "husky install",
@@ -19,13 +23,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ryansonshine/typescript-npm-package-template.git"
+    "url": "git+https://github.com/EmuDeck/DeckBuild.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Ryan Sonshine",
-    "email": "ryansonshine@users.noreply.github.com",
-    "url": "https://github.com/ryansonshine"
+    "name": "Witherking25",
+    "email": "witherking@withertech.com",
+    "url": "https://github.com/withertech"
   },
   "engines": {
     "node": ">=12.0"
@@ -42,9 +46,9 @@
     "codecov"
   ],
   "bugs": {
-    "url": "https://github.com/ryansonshine/typescript-npm-package-template/issues"
+    "url": "https://github.com/EmuDeck/DeckBuild/issues"
   },
-  "homepage": "https://github.com/ryansonshine/typescript-npm-package-template#readme",
+  "homepage": "https://github.com/EmuDeck/DeckBuild#readme",
   "devDependencies": {
     "@ryansonshine/commitizen": "^4.2.8",
     "@ryansonshine/cz-conventional-changelog": "^3.3.4",
@@ -54,9 +58,9 @@
     "@typescript-eslint/parser": "^4.22.0",
     "conventional-changelog-conventionalcommits": "^5.0.0",
     "eslint": "^7.25.0",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-editorconfig": "^4.0.2",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "husky": "^6.0.0",
     "jest": "^27.2.0",
     "lint-staged": "^10.5.4",
@@ -65,6 +69,15 @@
     "ts-jest": "^27.0.5",
     "ts-node": "^10.2.1",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/glob": "^8.0.0",
+    "@types/yargs": "^17.0.13",
+    "fs-extra": "^10.1.0",
+    "glob": "^8.0.3",
+    "ts-json-object": "^0.4.0",
+    "yargs": "13.2"
   },
   "config": {
     "commitizen": {
