@@ -82,12 +82,12 @@ function build()
 		if (entrypoint_exists)
 		{
 			console.log(`Running docker image "${docker_name}" with provided entrypoint script.`)
-			child_process.execSync(`docker run --rm -i -v ${path.join(process.cwd(), 'backend')}:/backend -v ${path.join(process.cwd(), 'build', 'backend', 'out')}:/backend/out --entrypoint /backend/entrypoint.sh "${docker_name}"`)
+			child_process.execSync(`docker run --rm -i -v "${path.join(process.cwd(), 'backend')}":/backend -v "${path.join(process.cwd(), 'build', 'backend', 'out')}":/backend/out --entrypoint /backend/entrypoint.sh "${docker_name}"`)
 		}
 		else
 		{
 			console.log(`Running docker image "${docker_name}" with entrypoint script specified in Dockerfile.`)
-			child_process.execSync(`docker run --rm -i -v ${path.join(process.cwd(), 'backend')}:/backend -v ${path.join(process.cwd(), 'build', 'backend', 'out')}:/backend/out "${docker_name}"`)
+			child_process.execSync(`docker run --rm -i -v "${path.join(process.cwd(), 'backend')}":/backend -v "${path.join(process.cwd(), 'build', 'backend', 'out')}":/backend/out "${docker_name}"`)
 		}
 		fs.mkdirSync(path.join(process.cwd(), 'build', plugin.name, 'bin'), {
 			recursive: true
@@ -105,7 +105,7 @@ function build()
 		fs.mkdirSync(path.join(process.cwd(), 'build', 'backend', 'out'), {
 			recursive: true
 		})
-		child_process.execSync(`docker run --rm -i -v ${path.join(process.cwd(), 'backend')}:/backend -v ${path.join(process.cwd(), 'build', 'backend', 'out')}:/backend/out ghcr.io/steamdeckhomebrew/holo-base:latest`)
+		child_process.execSync(`docker run --rm -i -v "${path.join(process.cwd(), 'backend')}":/backend -v "${path.join(process.cwd(), 'build', 'backend', 'out')}":/backend/out ghcr.io/steamdeckhomebrew/holo-base:latest`)
 		fs.mkdirSync(path.join(process.cwd(), 'build', plugin.name, 'bin'), {
 			recursive: true
 		})
@@ -120,7 +120,7 @@ function build()
 		console.log(`Plugin ${plugin.name} does not have a backend`)
 	}
 	//frontend
-	child_process.execSync(`docker run --rm -i -v ${process.cwd()}:/plugin -v ${path.join(process.cwd(), 'build', plugin.name)}:/out ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`docker run --rm -i -v "${process.cwd()}:/plugin -v ${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
 	console.log(` Built ${plugin.name} frontend`)
 
 	//zip
