@@ -24,7 +24,7 @@ if (fs.existsSync(path.join(process.cwd(), 'package.json')))
 }
 else throw new Error(path.join(process.cwd(), 'package.json') + ' does not exist');
 
-yargs
+void yargs
 	.scriptName('dbuild')
 	.command({
 		command: 'build',
@@ -43,7 +43,7 @@ yargs
 	.demand(1, 'must provide a valid command')
 	.help('h')
 	.alias('h', 'help')
-	.parseSync(process.argv.slice(2))
+	.parse(process.argv.slice(2))
 
 function build()
 {
