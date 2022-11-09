@@ -1,60 +1,5 @@
 # DeckBuild
 
-> Template to kickstart creating a Node.js module using TypeScript and VSCode
-
-Inspired by [node-module-boilerplate](https://github.com/sindresorhus/node-module-boilerplate)
-
-## Features
-
-- [Semantic Release](https://github.com/semantic-release/semantic-release)
-- [Issue Templates](https://github.com/ryansonshine/DeckBuild/tree/main/.github/ISSUE_TEMPLATE)
-- [GitHub Actions](https://github.com/ryansonshine/DeckBuild/tree/main/.github/workflows)
-- [Codecov](https://about.codecov.io/)
-- [VSCode Launch Configurations](https://github.com/ryansonshine/DeckBuild/blob/main/.vscode/launch.json)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Husky](https://github.com/typicode/husky)
-- [Lint Staged](https://github.com/okonet/lint-staged)
-- [Commitizen](https://github.com/search?q=commitizen)
-- [Jest](https://jestjs.io/)
-- [ESLint](https://eslint.org/)
-- [Prettier](https://prettier.io/)
-
-## Getting started
-
-### Set up your repository
-
-**Click the "Use this template" button.**
-
-Alternatively, create a new directory and then run:
-
-```bash
-curl -fsSL https://github.com/ryansonshine/DeckBuild/archive/main.tar.gz | tar -xz --strip-components=1
-```
-
-Replace `FULL_NAME`, `GITHUB_USER`, and `REPO_NAME` in the script below with your own details to personalize your new package:
-
-```bash
-FULL_NAME="John Smith"
-GITHUB_USER="johnsmith"
-REPO_NAME="my-cool-package"
-sed -i.mybak "s/\([\/\"]\)(ryansonshine)/$GITHUB_USER/g; s/DeckBuild\|DeckBuild/$REPO_NAME/g; s/Witherking25/$FULL_NAME/g" package.json package-lock.json README.md
-rm *.mybak
-```
-
-### Add NPM Token
-
-Add your npm token to your GitHub repository secrets as `NPM_TOKEN`.
-
-### Add Codecov integration
-
-Enable the Codecov GitHub App [here](https://github.com/apps/codecov).
-
-**Remove everything from here and above**
-
----
-
-# DeckBuild
-
 [![npm package][npm-img]][npm-url]
 [![Build Status][build-img]][build-url]
 [![Downloads][downloads-img]][downloads-url]
@@ -63,12 +8,12 @@ Enable the Codecov GitHub App [here](https://github.com/apps/codecov).
 [![Commitizen Friendly][commitizen-img]][commitizen-url]
 [![Semantic Release][semantic-release-img]][semantic-release-url]
 
-> My awesome module
+> Build System for Decky Loader plugins
 
 ## Install
 
 ```bash
-npm install deckbuild
+pnpm add --save-dev deckbuild
 ```
 
 ## Usage
@@ -80,11 +25,11 @@ dbuild deploy
 
 [build-img]:https://github.com/EmuDeck/DeckBuild/actions/workflows/release.yml/badge.svg
 [build-url]:https://github.com/EmuDeck/DeckBuild/actions/workflows/release.yml
-[downloads-img]:https://img.shields.io/npm/dt/DeckBuild
-[downloads-url]:https://www.npmtrends.com/DeckBuild
-[npm-img]:https://img.shields.io/npm/v/DeckBuild
-[npm-url]:https://www.npmjs.com/package/DeckBuild
-[issues-img]:https://img.shields.io/github/issues/EmuCkeck/DeckBuild
+[downloads-img]:https://img.shields.io/npm/dt/deckbuild
+[downloads-url]:https://www.npmtrends.com/deckbuild
+[npm-img]:https://img.shields.io/npm/v/deckbuild
+[npm-url]:https://www.npmjs.com/package/deckbuild
+[issues-img]:https://img.shields.io/github/issues/EmuDeck/DeckBuild
 [issues-url]:https://github.com/EmuDeck/DeckBuild/issues
 [codecov-img]:https://codecov.io/gh/EmuDeck/DeckBuild/branch/main/graph/badge.svg
 [codecov-url]:https://codecov.io/gh/EmuDeck/DeckBuild
