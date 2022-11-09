@@ -68,7 +68,7 @@ function build()
 
 	//backend
 	console.log(`Detecting backend for plugin ${plugin.name}`);
-	const docker_name = `backend-${plugin.name.toLowerCase()}`;
+	const docker_name = `backend-${plugin.name.toLowerCase().replace(' ', '-')}`;
 	const dockerfile_exists = fs.existsSync(path.join(process.cwd(), 'backend', 'Dockerfile'));
 	const entrypoint_exists = fs.existsSync(path.join(process.cwd(), 'backend', 'entrypoint.sh'));
 	if (dockerfile_exists)
