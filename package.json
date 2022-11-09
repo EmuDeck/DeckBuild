@@ -1,6 +1,6 @@
 {
   "name": "deckbuild",
-  "version": "0.0.0-development",
+  "version": "1.0.0",
   "description": "A template for creating npm packages using TypeScript and VSCode",
   "main": "./bin/index.js",
   "files": [
