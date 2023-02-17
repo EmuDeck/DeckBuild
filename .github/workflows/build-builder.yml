@@ -38,7 +38,7 @@ jobs:
 
     - name: Push
       run: |
-        docker push ghcr.io/EmuDeck/builder:latest
+        docker push ghcr.io/deckbuild/builder:latest
 
     - name: Log out of GitHub Container Registry
       run: |
