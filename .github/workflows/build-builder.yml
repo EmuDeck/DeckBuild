@@ -29,7 +29,7 @@ jobs:
     - name: Build
       run: |
         cd builder
-        docker build -t ghcr.io/EmuDeck/builder:latest .
+        docker build -t ghcr.io/deckbuild/builder:latest .
 
     - name: Wait for other runs to complete
       uses: softprops/turnstyle@8db075d65b19bf94e6e8687b504db69938dc3c65
