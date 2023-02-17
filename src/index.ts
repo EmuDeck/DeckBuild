@@ -25,14 +25,21 @@ if (fs.existsSync(path.join(process.cwd(), 'package.json')))
 
 void yargs
 	.scriptName('dbuild')
-	.command({
-		command: 'build',
-		aliases: ['b'],
-		describe: 'Builds a plugin and creates a zip file for distribution',
-		handler: build,
-		builder: {},
-	})
-	.command<{ reload: boolean }>({
+	.command<{ dev: boolean }>({
+	command: 'build',
+	aliases: ['b'],
+	describe: 'Builds a plugin and creates a zip file for distribution',
+	handler: build,
+	builder: {
+		'dev': {
+			alias: 'd',
+			describe: 'Makes a dev build',
+			type: 'boolean',
+			default: false,
+		}
+	}
+})
+	.command<{ reload: boolean, dev: boolean }>({
 	command: 'deploy',
 	aliases: ['d'],
 	describe: 'Deploys a plugin to a test deck',
@@ -43,6 +50,12 @@ void yargs
 			describe: 'Reloads decky',
 			type: 'boolean',
 			default: false,
+		},
+		'dev': {
+			alias: 'd',
+			describe: 'Makes a dev build',
+			type: 'boolean',
+			default: false,
 		}
 	},
 })
@@ -51,7 +64,7 @@ void yargs
 	.alias('h', 'help')
 	.parse(process.argv.slice(2))
 
-function build()
+function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 {
 	if (fs.existsSync(path.join(process.cwd(), 'build')))
 	{
@@ -69,16 +82,16 @@ function build()
 	}
 	let container: string;
 
-	if (fs.existsSync('/var/run/docker.pid'))
+	if (fs.existsSync('/var/run/builder.pid'))
 	{
-		container = 'docker';
+		container = 'builder';
 	} else if (fs.existsSync('/usr/bin/podman') && fs.existsSync('/usr/bin/slirp4netns') && fs.existsSync('/usr/bin/fuse-overlayfs'))
 	{
 		container = 'podman'
-	} else throw new Error('podman or docker not found')
+	} else throw new Error('podman or builder not found')
 
-	//pull docker images
-	child_process.execSync(`${container} pull ghcr.io/steamdeckhomebrew/builder:latest`)
+	//pull builder images
+	child_process.execSync(`${container} pull ghcr.io/EmuDeck/builder:latest`)
 	child_process.execSync(`${container} pull ghcr.io/steamdeckhomebrew/holo-base:latest`)
 
 	//backend
@@ -114,7 +127,7 @@ function build()
 		console.log(`Built ${plugin.name} backend`)
 	} else if (!dockerfile_exists && entrypoint_exists)
 	{
-		console.log('Grabbing default docker image and using provided entrypoint script.')
+		console.log('Grabbing default builder image and using provided entrypoint script.')
 		fs.mkdirSync(path.join(process.cwd(), 'build', 'backend', 'out'), {
 			recursive: true
 		})
@@ -132,11 +145,11 @@ function build()
 		console.log(`Plugin ${plugin.name} does not have a backend`)
 	}
 	//frontend
-	child_process.execSync(`${container} run --rm -i -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`${container} run --rm -i -e NODE_ENV="${args.dev ? 'development' : 'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/EmuDeck/builder:latest`)
 	console.log(` Built ${plugin.name} frontend`)
 
 	//zip
-	const zip = `${plugin.name}-${package_.version}.zip`;
+	const zip = `${plugin.name}-${package_.version}${args.dev ? '-dev' : ''}.zip`;
 	const license = (fs.existsSync(path.join(process.cwd(), 'LICENSE')) ? 'LICENSE':fs.existsSync(path.join(process.cwd(), 'license')) ? 'license':fs.existsSync(path.join(process.cwd(), 'LICENSE.md')) ? 'LICENSE.md':fs.existsSync(path.join(process.cwd(), 'license.md')) ? 'license.md':undefined)
 	const readme = (fs.existsSync(path.join(process.cwd(), 'README.md')) ? 'README.md':fs.existsSync(path.join(process.cwd(), 'readme.md')) ? 'readme.md':undefined)
 	const has_python = glob.sync(path.join(process.cwd(), '*.py')).length > 0
@@ -192,7 +205,7 @@ function build()
 	process.chdir('..')
 }
 
-function deploy(args: yargs.ArgumentsCamelCase<{ reload: boolean }>)
+function deploy(args: yargs.ArgumentsCamelCase<{ reload: boolean, dev: boolean }>)
 {
 	if (fs.existsSync(path.join(process.cwd(), 'deck.json')))
 	{
@@ -202,8 +215,8 @@ function deploy(args: yargs.ArgumentsCamelCase<{ reload: boolean }>)
 	{
 		deck = new Deck(require(path.join(process.cwd(), '.vscode', 'settings.json')));
 	} else throw new Error(`${path.join(process.cwd(), 'deck.json')} or ${path.join(process.cwd(), '.vscode', 'settings.json')} does not exist`);
-	build()
-	const zip = `${plugin.name}-${package_.version}.zip`;
+	build(args)
+	const zip = `${plugin.name}-${package_.version}${args.dev ? '-dev' : ''}.zip`;
 	child_process.execSync(`unzip "${path.join(process.cwd(), 'build', zip)}" -d ${path.join(process.cwd(), 'build', 'deploy')}`)
 	child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'mkdir -p ${deck.deckdir}/homebrew/pluginloader && mkdir -p ${deck.deckdir}/homebrew/plugins'`)
 	child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'echo "${deck.deckpass}" | sudo -S chmod -R ug+rw ${deck.deckdir}/homebrew/'`)
