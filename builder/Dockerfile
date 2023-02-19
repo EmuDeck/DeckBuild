@@ -1,6 +1,6 @@
 FROM node:18-alpine
 
-RUN apk add --no-cache rsync
+RUN apk add --no-cache rsync python3 py3-pip
 
 RUN npm i --location=global pnpm
 

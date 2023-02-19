@@ -110,7 +110,7 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 	} else throw new Error('podman or builder not found')
 
 	//pull builder images
-	child_process.execSync(`${container} pull ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`${container} pull ghcr.io/emudeck/builder:latest`)
 	child_process.execSync(`${container} pull ghcr.io/steamdeckhomebrew/holo-base:latest`)
 
 	//backend
@@ -164,7 +164,7 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 		console.log(`Plugin ${plugin.name} does not have a backend`)
 	}
 	//frontend
-	child_process.execSync(`${container} run --rm -i -e RELEASE_TYPE="${args.dev ? 'development':'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`${container} run --rm -i -e RELEASE_TYPE="${args.dev ? 'development':'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/emudeck/builder:latest`)
 	console.log(` Built ${plugin.name} frontend`)
 
 	//zip
@@ -265,7 +265,7 @@ function _package(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 	} else throw new Error('podman or builder not found')
 
 	//pull builder images
-	child_process.execSync(`${container} pull ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`${container} pull ghcr.io/emudeck/builder:latest`)
 	child_process.execSync(`${container} pull ghcr.io/steamdeckhomebrew/holo-base:latest`)
 
 	//backend
@@ -319,7 +319,7 @@ function _package(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 		console.log(`Plugin ${plugin.name} does not have a backend`)
 	}
 	//frontend
-	child_process.execSync(`${container} run --rm -i -e RELEASE_TYPE="${args.dev ? 'development':'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`${container} run --rm -i -e RELEASE_TYPE="${args.dev ? 'development':'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/emudeck/builder:latest`)
 	console.log(` Built ${plugin.name} frontend`)
 
 	//zip
