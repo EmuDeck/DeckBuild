@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as child_process from 'child_process';
 import {glob} from 'glob';
 import {Package} from './package';
+import * as Path from 'path';
 
 let deck: Deck;
 let plugin: Plugin;
@@ -25,54 +26,57 @@ if (fs.existsSync(path.join(process.cwd(), 'package.json')))
 
 void yargs
 	.scriptName('dbuild')
-	.command<{ dev: boolean }>({
-	command: 'build',
-	aliases: ['b'],
-	describe: 'Builds a plugin',
-	handler: build,
-	builder: {
-		'dev': {
-			alias: 'd',
-			describe: 'Makes a dev build',
-			type: 'boolean',
-			default: false,
+	.command<{ dev: boolean }>(
+	{
+		command: 'build',
+		aliases: ['b'],
+		describe: 'Builds a plugin',
+		handler: build,
+		builder: {
+			'dev': {
+				alias: 'd',
+				describe: 'Makes a dev build',
+				type: 'boolean',
+				default: false,
+			}
 		}
-	}
-})
-	.command<{ dev: boolean }>({
-	command: 'package',
-	aliases: ['p'],
-	describe: 'Builds a plugin and creates a zip file for distribution',
-	handler: _package,
-	builder: {
-		'dev': {
-			alias: 'd',
-			describe: 'Makes a dev build',
-			type: 'boolean',
-			default: false,
+	})
+	.command<{ dev: boolean }>(
+	{
+		command: 'package',
+		aliases: ['p'],
+		describe: 'Builds a plugin and creates a zip file for distribution',
+		handler: _package,
+		builder: {
+			'dev': {
+				alias: 'd',
+				describe: 'Makes a dev build',
+				type: 'boolean',
+				default: false,
+			}
 		}
-	}
-})
-	.command<{ reload: boolean, dev: boolean }>({
-	command: 'deploy',
-	aliases: ['d'],
-	describe: 'Deploys a plugin to a test deck',
-	handler: deploy,
-	builder: {
-		'reload': {
-			alias: 'r',
-			describe: 'Reloads decky',
-			type: 'boolean',
-			default: false,
+	})
+	.command<{ reload: boolean, dev: boolean }>(
+	{
+		command: 'deploy',
+		aliases: ['d'],
+		describe: 'Deploys a plugin to a test deck',
+		handler: deploy,
+		builder: {
+			'reload': {
+				alias: 'r',
+				describe: 'Reloads decky',
+				type: 'boolean',
+				default: false,
+			},
+			'dev': {
+				alias: 'd',
+				describe: 'Makes a dev build',
+				type: 'boolean',
+				default: false,
+			}
 		},
-		'dev': {
-			alias: 'd',
-			describe: 'Makes a dev build',
-			type: 'boolean',
-			default: false,
-		}
-	},
-})
+	})
 	.demand(1, 'must provide a valid command')
 	.help('h')
 	.alias('h', 'help')
@@ -80,6 +84,7 @@ void yargs
 
 function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 {
+	setup_pnpm()
 	if (fs.existsSync(path.join(process.cwd(), 'build')))
 	{
 		fs.rmdirSync(path.join(process.cwd(), 'build'), {
@@ -159,11 +164,11 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 		console.log(`Plugin ${plugin.name} does not have a backend`)
 	}
 	//frontend
-	child_process.execSync(`${container} run --rm -i -e RELEASE_TYPE="${args.dev ? 'development' : 'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`${container} run --rm -i -e RELEASE_TYPE="${args.dev ? 'development':'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
 	console.log(` Built ${plugin.name} frontend`)
 
 	//zip
-	const output = `${plugin.name}-${package_.version}${args.dev ? '-dev' : ''}`;
+	const output = `${plugin.name}-${package_.version}${args.dev ? '-dev':''}`;
 	const license = (fs.existsSync(path.join(process.cwd(), 'LICENSE')) ? 'LICENSE':fs.existsSync(path.join(process.cwd(), 'license')) ? 'license':fs.existsSync(path.join(process.cwd(), 'LICENSE.md')) ? 'LICENSE.md':fs.existsSync(path.join(process.cwd(), 'license.md')) ? 'license.md':undefined)
 	const readme = (fs.existsSync(path.join(process.cwd(), 'README.md')) ? 'README.md':fs.existsSync(path.join(process.cwd(), 'readme.md')) ? 'readme.md':undefined)
 	const has_python = glob.sync(path.join(process.cwd(), '*.py')).length > 0
@@ -222,7 +227,7 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 		entries.push(path.join(plugin.name, readme))
 	}
 
-	for(const entry of entries)
+	for (const entry of entries)
 	{
 		fs.copySync(path.join(process.cwd(), plugin.name, entry), path.join(process.cwd(), output, plugin.name), {
 			recursive: true
@@ -234,6 +239,7 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 
 function _package(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 {
+	setup_pnpm()
 	if (fs.existsSync(path.join(process.cwd(), 'build')))
 	{
 		fs.rmdirSync(path.join(process.cwd(), 'build'), {
@@ -313,11 +319,11 @@ function _package(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 		console.log(`Plugin ${plugin.name} does not have a backend`)
 	}
 	//frontend
-	child_process.execSync(`${container} run --rm -i -e RELEASE_TYPE="${args.dev ? 'development' : 'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
+	child_process.execSync(`${container} run --rm -i -e RELEASE_TYPE="${args.dev ? 'development':'production'}" -v "${process.cwd()}":/plugin -v "${path.join(process.cwd(), 'build', plugin.name)}":/out ghcr.io/steamdeckhomebrew/builder:latest`)
 	console.log(` Built ${plugin.name} frontend`)
 
 	//zip
-	const zip = `${plugin.name}-${package_.version}${args.dev ? '-dev' : ''}.zip`;
+	const zip = `${plugin.name}-${package_.version}${args.dev ? '-dev':''}.zip`;
 	const license = (fs.existsSync(path.join(process.cwd(), 'LICENSE')) ? 'LICENSE':fs.existsSync(path.join(process.cwd(), 'license')) ? 'license':fs.existsSync(path.join(process.cwd(), 'LICENSE.md')) ? 'LICENSE.md':fs.existsSync(path.join(process.cwd(), 'license.md')) ? 'license.md':undefined)
 	const readme = (fs.existsSync(path.join(process.cwd(), 'README.md')) ? 'README.md':fs.existsSync(path.join(process.cwd(), 'readme.md')) ? 'readme.md':undefined)
 	const has_python = glob.sync(path.join(process.cwd(), '*.py')).length > 0
@@ -384,7 +390,7 @@ function deploy(args: yargs.ArgumentsCamelCase<{ reload: boolean, dev: boolean }
 		deck = new Deck(require(path.join(process.cwd(), '.vscode', 'settings.json')));
 	} else throw new Error(`${path.join(process.cwd(), 'deck.json')} or ${path.join(process.cwd(), '.vscode', 'settings.json')} does not exist`);
 	build(args)
-	const deploy = path.join(process.cwd(), 'build', `${plugin.name}-${package_.version}${args.dev ? '-dev' : ''}`);
+	const deploy = path.join(process.cwd(), 'build', `${plugin.name}-${package_.version}${args.dev ? '-dev':''}`);
 	child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'mkdir -p ${deck.deckdir}/homebrew/pluginloader && mkdir -p ${deck.deckdir}/homebrew/plugins'`)
 	child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'echo "${deck.deckpass}" | sudo -S chmod -R ug+rw ${deck.deckdir}/homebrew/'`)
 	child_process.execSync(`rsync -azp --delete --chmod=D0755,F0755 --rsh='ssh -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')}' "${path.join(deploy, plugin.name)}" deck@${deck.deckip}:${deck.deckdir}/homebrew/plugins`)
@@ -392,5 +398,12 @@ function deploy(args: yargs.ArgumentsCamelCase<{ reload: boolean, dev: boolean }
 	{
 		child_process.execSync(`ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'echo "${deck.deckpass}" | sudo -S systemctl restart plugin_loader.service'`)
 	}
+}
+
+function setup_pnpm()
+{
+	child_process.execSync('pnpm config set store-dir ./.pnpm-store');
+	fs.rmdirSync(Path.join(process.cwd(), 'node_modules'), { recursive: true });
+	child_process.execSync('pnpm install');
 }
 
