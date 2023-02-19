@@ -7,9 +7,8 @@
   <component name="ProjectRootManager" version="2" project-jdk-name="DMD64 D Compiler v2.100.1" project-jdk-type="DMD2 SDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
-  <component name="SwUserDefinedSpecifications">
-    <option name="specTypeByUrl">
-      <map />
-    </option>
+  <component name="XMakeProjectSettings">
+    <option name="currentArchitecture" value="x86_64" />
+    <option name="workingDirectory" value="$PROJECT_DIR$" />
   </component>
 </project>
