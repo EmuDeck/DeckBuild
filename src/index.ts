@@ -229,7 +229,7 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 
 	for (const entry of entries)
 	{
-		fs.copySync(path.join(process.cwd(), plugin.name, entry), path.join(process.cwd(), output, plugin.name, entry), {
+		fs.copySync(path.join(process.cwd(), entry), path.join(process.cwd(), output, plugin.name, entry), {
 			recursive: true
 		})
 	}
