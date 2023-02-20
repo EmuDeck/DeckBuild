@@ -23,4 +23,4 @@ else
 fi
 
 
-rsync -r --exclude "src/" --exclude "__pycache__" --exclude "node_modules" --exclude ".pnpm-store" /plugin/ /out/
+rsync -r --exclude "src/" --exclude "__pycache__" --exclude "node_modules" --exclude ".pnpm-store" --exclude ".git" /plugin/ /out/
