@@ -395,13 +395,14 @@ function deploy(args: yargs.ArgumentsCamelCase<{ reload: boolean, dev: boolean }
 		deck = new Deck(require(path.join(process.cwd(), '.vscode', 'settings.json')));
 	} else throw new Error(`${path.join(process.cwd(), 'deck.json')} or ${path.join(process.cwd(), '.vscode', 'settings.json')} does not exist`);
 	build(args)
+	const sshpass = `sshpass -p ${deck.decksshpass} -P "Enter passphrase for key '/home/witherking25/.ssh/id_rsa':"`
 	const deploy = path.join(process.cwd(), 'build', `${plugin.name}-${package_.version}${args.dev ? '-dev':''}`);
-	child_process.execSync(`sshpass -p ${deck.decksshpass} ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'mkdir -p ${deck.deckdir}/homebrew/pluginloader && mkdir -p ${deck.deckdir}/homebrew/plugins'`)
-	child_process.execSync(`sshpass -p ${deck.decksshpass} ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'echo "${deck.deckpass}" | sudo -S chmod -R ug+rw ${deck.deckdir}/homebrew/'`)
-	child_process.execSync(`rsync -azp --delete --chmod=D0755,F0755 --rsh='sshpass -p ${deck.decksshpass} ssh -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')}' "${path.join(deploy, plugin.name)}" deck@${deck.deckip}:${deck.deckdir}/homebrew/plugins`)
+	child_process.execSync(`${sshpass} ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'mkdir -p ${deck.deckdir}/homebrew/pluginloader && mkdir -p ${deck.deckdir}/homebrew/plugins'`)
+	child_process.execSync(`${sshpass} ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'echo "${deck.deckpass}" | sudo -S chmod -R ug+rw ${deck.deckdir}/homebrew/'`)
+	child_process.execSync(`rsync -azp --delete --chmod=D0755,F0755 --rsh='${sshpass} ssh -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')}' "${path.join(deploy, plugin.name)}" deck@${deck.deckip}:${deck.deckdir}/homebrew/plugins`)
 	if (args.reload)
 	{
-		child_process.execSync(`sshpass -p ${deck.decksshpass} ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'echo "${deck.deckpass}" | sudo -S systemctl restart plugin_loader.service'`)
+		child_process.execSync(`${sshpass} ssh deck@${deck.deckip} -p ${deck.deckport} ${deck.deckkey.replace('$HOME', process.env.HOME ? process.env.HOME:'')} 'echo "${deck.deckpass}" | sudo -S systemctl restart plugin_loader.service'`)
 	}
 }
 
