@@ -190,7 +190,7 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 
 	if (has_python)
 	{
-		entries.push(...glob.sync(`${plugin.name}/*.py`, {nodir: true}))
+		entries.push(...glob.sync(`${plugin.name}/*.py`, {nodir: true}).map(value => path.basename(value)))
 	}
 
 	if (has_defaults)
@@ -203,7 +203,7 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 				fs.copySync(path.join(plugin.name, 'defaults', name), path.join(plugin.name, name), {
 					recursive: true
 				});
-				entries.push(path.join(plugin.name, name))
+				entries.push(name)
 			}
 		} else
 		{
@@ -219,17 +219,17 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 
 	if (license)
 	{
-		entries.push(path.join(plugin.name, license))
+		entries.push(license)
 	}
 
 	if (readme)
 	{
-		entries.push(path.join(plugin.name, readme))
+		entries.push(readme)
 	}
 
 	for (const entry of entries)
 	{
-		fs.copySync(path.join(process.cwd(), entry), path.join(process.cwd(), output, plugin.name, entry), {
+		fs.copySync(path.join(process.cwd(), plugin.name, entry), path.join(process.cwd(), output, plugin.name, entry), {
 			recursive: true
 		})
 	}
