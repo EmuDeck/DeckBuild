@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd /plugin
+cd /plugin || exit
 
 if ! pnpm i --frozen-lockfile;
 then
@@ -8,7 +8,7 @@ then
   exit 1
 fi
 
-if [ $NODE_ENV == "development" ]; then
+if [ "$RELEASE_TYPE" = "development" ]; then
     if ! pnpm run dev;
     then
       printf "error code: %s\npnpm build failed, please report this issue to the CI maintainer and the plugin developer." "$?"
@@ -23,4 +23,4 @@ else
 fi
 
 
-rsync -r --exclude "src/" --exclude "__pycache__" --exclude "node_modules" /plugin/ /out/
+rsync -r --exclude "src/" --exclude "__pycache__" --exclude "node_modules" --exclude ".pnpm-store" /plugin/ /out/
