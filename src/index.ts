@@ -233,7 +233,9 @@ function build(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 			recursive: true
 		})
 	}
-	fs.rmdirSync(plugin.name)
+	fs.rmdirSync(plugin.name, {
+		recursive: true
+	})
 	process.chdir('..')
 }
 
@@ -376,6 +378,9 @@ function _package(args: yargs.ArgumentsCamelCase<{ dev: boolean }>)
 	{
 		child_process.execSync(`zip -r "${path.join(process.cwd(), zip)}" "${path.join(plugin.name, readme)}"`)
 	}
+	fs.rmdirSync(plugin.name, {
+		recursive: true
+	})
 	process.chdir('..')
 }
 
