@@ -14,6 +14,9 @@ export class Deck extends JSONObject
 	@optional('-i ${env:HOME}/.ssh/id_rsa')
 	deckkey!: string
 
+	@optional('ssap')
+	decksshpass!: string
+
 	@optional('/home/deck')
 	deckdir!: string
 }
